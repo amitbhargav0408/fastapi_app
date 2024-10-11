@@ -1,0 +1,351 @@
+openapi: 3.0.0
+info:
+  title: Items and Clock-In Records API
+  version: 1.0.0
+  description: API for managing items and user clock-in records.
+
+paths:
+  /items:
+    post:
+      summary: Create a new item
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "Alice Smith"
+                email:
+                  type: string
+                  format: email
+                  example: "alice@example.com"
+                item_name:
+                  type: string
+                  example: "Milk"
+                quantity:
+                  type: integer
+                  example: 10
+                expiry_date:
+                  type: string
+                  format: date
+                  example: "2024-11-01"
+      responses:
+        '201':
+          description: Item created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: "60d5f48494d3b1b5f8b2b1b5"
+                  name:
+                    type: string
+                  email:
+                    type: string
+                  item_name:
+                    type: string
+                  quantity:
+                    type: integer
+                  expiry_date:
+                    type: string
+                    format: date
+
+  /items/{id}:
+    get:
+      summary: Retrieve an item by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the item to retrieve
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful retrieval
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  name:
+                    type: string
+                  email:
+                    type: string
+                  item_name:
+                    type: string
+                  quantity:
+                    type: integer
+                  expiry_date:
+                    type: string
+                    format: date
+        '404':
+          description: Item not found
+
+    put:
+      summary: Update an item by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the item to update
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "Alice Smith"
+                email:
+                  type: string
+                  format: email
+                  example: "alice@example.com"
+                item_name:
+                  type: string
+                  example: "Almond Milk"
+                quantity:
+                  type: integer
+                  example: 15
+                expiry_date:
+                  type: string
+                  format: date
+                  example: "2024-11-15"
+      responses:
+        '200':
+          description: Item updated
+        '404':
+          description: Item not found
+
+    delete:
+      summary: Delete an item by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the item to delete
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Item deleted
+        '404':
+          description: Item not found
+
+  /items/filter:
+    get:
+      summary: Filter items based on criteria
+      parameters:
+        - name: email
+          in: query
+          required: false
+          description: Filter by email
+          schema:
+            type: string
+        - name: expiry_date
+          in: query
+          required: false
+          description: Filter items expiring after this date
+          schema:
+            type: string
+            format: date
+        - name: insert_date
+          in: query
+          required: false
+          description: Filter items inserted after this date
+          schema:
+            type: string
+            format: date
+        - name: quantity
+          in: query
+          required: false
+          description: Filter items with quantity greater than or equal to this number
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful retrieval of filtered items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    name:
+                      type: string
+                    email:
+                      type: string
+                    item_name:
+                      type: string
+                    quantity:
+                      type: integer
+                    expiry_date:
+                      type: string
+                      format: date
+
+  /clock-in:
+    post:
+      summary: Create a new clock-in entry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: "alice@example.com"
+                location:
+                  type: string
+                  example: "Office"
+      responses:
+        '201':
+          description: Clock-in entry created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: "60d5f48494d3b1b5f8b2b1b6"
+                  email:
+                    type: string
+                  location:
+                    type: string
+                  insert_datetime:
+                    type: string
+                    format: date-time
+
+  /clock-in/{id}:
+    get:
+      summary: Retrieve a clock-in record by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the clock-in record to retrieve
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful retrieval
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  email:
+                    type: string
+                  location:
+                    type: string
+                  insert_datetime:
+                    type: string
+                    format: date-time
+        '404':
+          description: Record not found
+
+    put:
+      summary: Update a clock-in record by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the clock-in record to update
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: "alice@example.com"
+                location:
+                  type: string
+                  example: "Home Office"
+      responses:
+        '200':
+          description: Clock-in record updated
+        '404':
+          description: Record not found
+
+    delete:
+      summary: Delete a clock-in record by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the clock-in record to delete
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Record deleted
+        '404':
+          description: Record not found
+
+  /clock-in/filter:
+    get:
+      summary: Filter clock-in records based on criteria
+      parameters:
+        - name: email
+          in: query
+          required: false
+          description: Filter by email
+          schema:
+            type: string
+        - name: location
+          in: query
+          required: false
+          description: Filter by location
+          schema:
+            type: string
+        - name: insert_datetime
+          in: query
+          required: false
+          description: Filter clock-ins after this datetime
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: Successful retrieval of filtered clock-in records
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    email:
+                      type: string
+                    location:
+                      type: string
+                    insert_datetime:
+                      type: string
+                      format: date-time
