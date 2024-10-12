@@ -1,4 +1,3 @@
-```markdown
 # FastAPI CRUD Application
 
 This project is a FastAPI application that implements CRUD operations for two entities: **Items** and **User Clock-In Records**. It uses MongoDB for data storage and supports various filtering options as well as aggregation queries.
@@ -39,11 +38,28 @@ This project is a FastAPI application that implements CRUD operations for two en
 2. Create a virtual environment and install dependencies:
    ```bash
    python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   source venv/bin/activate  
    pip install -r requirements.txt
    ```
 
-3. Configure your MongoDB connection in `app/database.py`.
+3. **Important:** **Configure your MongoDB connection in `app/database.py`.**
+   
+   > **⚠️ Important:**  
+   > Before running the application, you **must** update the `mongodb_url` variable in `app/database.py` with your actual MongoDB connection string. This ensures that the application connects to the correct database instance.
+   >
+   > Example:
+   > ```python
+   > # app/database.py
+   > from pymongo import MongoClient
+   > import os
+   >
+   > MONGODB_URL = os.getenv("MONGODB_URL", "your_actual_mongodb_connection_string")
+   > client = MongoClient(MONGODB_URL)
+   > db = client.your_database_name
+   > ```
+
+   **Recommendation:**  
+   For better security and flexibility, consider using environment variables to store your MongoDB connection string instead of hardcoding it. You can use packages like `python-dotenv` to manage environment variables.
 
 ### Running the Application
 
@@ -98,7 +114,7 @@ The API documentation is available at `http://localhost:8000/docs` when the serv
     - Email (exact match).
     - Expiry Date (filter items expiring after the provided date).
     - Insert Date (filter items inserted after the provided date).
-    - Quantity (items with quantity greater than or equal to the provided number using a `gte` filter.
+    - Quantity (items with quantity greater than or equal to the provided number using a `gte` filter).
   - **Example Query**: `/items/filter?email=john@example.com&expiry_date=2023-01-01&insert_date=2023-01-01&quantity=5`
 
 - **DELETE /items/{id}**
@@ -184,9 +200,45 @@ The API documentation is available at `http://localhost:8000/docs` when the serv
     }
     ```
 
+## Docker Integration
+
+The application can be containerized and deployed using Docker.
+
+### Building and Running the Docker Container
+
+1. Build the Docker image:
+   ```bash
+   docker build -t amitbhargav/fastapiapp:latest .
+   ```
+
+2. Run the Docker container:
+   ```bash
+   docker run -p 8000:8000 amitbhargav/fastapiapp:latest
+   ```
+
+### Pushing to Docker Hub
+
+1. Tag the Docker image:
+   ```bash
+   docker tag amitbhargav/fastapiapp:latest amitbhargav/fastapiapp:tagname
+   ```
+
+2. Push the image to Docker Hub:
+   ```bash
+   docker push amitbhargav/fastapiapp:tagname
+   ```
+
+### Pulling from Docker Hub
+
+To use the Docker image on another machine or server, pull it from Docker Hub:
+
+```bash
+docker pull amitbhargav/fastapiapp:latest
+```
+
 ## Deployment
 
-The application is hosted on [Koyeb](your-hosted-url), and the Swagger UI is accessible for testing the APIs.
+The application is hosted on [Koyeb](https://glad-merralee-wacky12-a801f7ca.koyeb.app), and the [Swagger UI](https://app.swaggerhub.com/apis/AmitBhargav/items-and_clock_in_records_api/1.0.0) is accessible for testing the APIs.
 
 ## Contributing
 
@@ -195,6 +247,3 @@ Feel free to fork the repository, make changes, and create a pull request!
 ## License
 
 This project is licensed under the MIT License.
-```
-
-Feel free to adjust any sections or add additional details as needed!
